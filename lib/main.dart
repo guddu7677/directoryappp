@@ -1,4 +1,5 @@
 import 'package:directoryapp/module/home/views/homeScreen/HomeItemDetails/home_item_details.dart';
+import 'package:directoryapp/module/home/views/homeScreen/JobBoardScreen.dart';
 import 'package:directoryapp/module/home/views/homeScreen/JobPosting/add_job_screen.dart';
 import 'package:directoryapp/module/home/views/homeScreen/JobPostingScreen.dart';
 import 'package:directoryapp/module/home/views/homeScreen/SearchfilterScreen/searchfilter_screen.dart';
@@ -22,7 +23,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: MainScreen(),
+      home: SplashScreen(),
       routes: {
         "/SplashScreen":(context)=>SplashScreen(),
         "/OnboardingScreen":(context)=>OnboardingScreen(),
@@ -35,6 +36,7 @@ class MyApp extends StatelessWidget {
         "/HomeItemDetails":(context)=>HomeItemDetails(),
         "/JobPostingScreen":(context)=>JobPostingScreen(),
         "/AddJobScreen":(context)=>AddJobScreen(),
+        "/Jobboardscreen":(context)=>Jobboardscreen(),
       },
       );
   }
