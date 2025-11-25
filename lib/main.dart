@@ -6,12 +6,14 @@ import 'package:directoryapp/module/home/views/homeScreen/JobPostingScreen.dart'
 import 'package:directoryapp/module/home/views/homeScreen/Notificationss/notification_screen.dart';
 import 'package:directoryapp/module/home/views/homeScreen/RatingScreen/rating_screen.dart';
 import 'package:directoryapp/module/home/views/homeScreen/SearchfilterScreen/searchfilter_screen.dart';
+import 'package:directoryapp/module/home/views/homeScreen/SettingTabScreen/personal_information.dart';
 import 'package:directoryapp/module/home/views/homeScreen/Subscription/subscription_screen.dart';
 import 'package:directoryapp/module/home/views/homeScreen/main_screen.dart';
 import 'package:directoryapp/module/authentication/views/screens/registerScreen/address_screen.dart';
 import 'package:directoryapp/module/authentication/views/screens/registerScreen/otp_screen.dart';
 import 'package:directoryapp/module/authentication/views/screens/registerScreen/profile_register.dart';
 import 'package:directoryapp/module/authentication/views/screens/registerScreen/register_screen.dart';
+import 'package:directoryapp/module/home/views/homeScreen/setting_screen.dart';
 import 'package:directoryapp/module/home/views/splashscreen/onbording_screen.dart';
 import 'package:directoryapp/module/home/views/splashscreen/splash_screen.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +29,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: RatingScreen(),
+      home: SplashScreen(),
       routes: {
         "/SplashScreen": (context) => SplashScreen(),
         "/OnboardingScreen": (context) => OnboardingScreen(),
@@ -45,6 +47,9 @@ class MyApp extends StatelessWidget {
         "/NotificationScreen": (context) => NotificationScreen(),
         "/SubscriptionScreen": (context) => SubscriptionScreen(),
         "/RatingScreen": (context) => RatingScreen(),
+        "/SettingScreen":(context)=>SettingScreen(),
+        "/PersonalInformation":(context)=>PersonalInformation(),
+
       },
     );
   }
