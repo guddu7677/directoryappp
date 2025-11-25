@@ -93,4 +93,10 @@ class AppTextStyle {
     fontSize: 14,
     fontWeight: FontWeight.w600,
   );
+   static const TextStyle normal12black = TextStyle(
+    fontFamily: AppFonts.sourceSans,
+    color: Colors.black,
+    fontSize: 12,
+    fontWeight: FontWeight.w400,
+  );
 }
