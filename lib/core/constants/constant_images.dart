@@ -13,6 +13,11 @@ class AppImage {
   static const String homeImg = "assets/images/homeImg.jpg";
   static const String appBarimg = "assets/images/appbarImg.jpg";
   static const String logoImg = "assets/images/logo.png";
+    static const String payhistoryimg = "assets/images/payhistory.png";
+  static const String historyimg = "assets/images/historyimg.png";
+    static const String aboutUsimg = "assets/images/aboutus.jpg";
+
+
 }
 
 class AppIconImg {

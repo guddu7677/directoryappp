@@ -4,10 +4,16 @@ import 'package:directoryapp/module/home/views/homeScreen/JobBoardScreen.dart';
 import 'package:directoryapp/module/home/views/homeScreen/JobPosting/add_job_screen.dart';
 import 'package:directoryapp/module/home/views/homeScreen/JobPostingScreen.dart';
 import 'package:directoryapp/module/home/views/homeScreen/Notificationss/notification_screen.dart';
-import 'package:directoryapp/module/home/views/homeScreen/RatingScreen/rating_screen.dart';
+import 'package:directoryapp/module/home/views/homeScreen/SettingTabScreen/about_us_screen.dart';
+import 'package:directoryapp/module/home/views/homeScreen/SettingTabScreen/bookmark_screen.dart';
+import 'package:directoryapp/module/home/views/homeScreen/SettingTabScreen/help_support_screen.dart';
+import 'package:directoryapp/module/home/views/homeScreen/SettingTabScreen/payment_history_screen.dart';
+import 'package:directoryapp/module/home/views/homeScreen/SettingTabScreen/privacy_policy_screen.dart';
+import 'package:directoryapp/module/home/views/homeScreen/SettingTabScreen/rating_screen.dart';
 import 'package:directoryapp/module/home/views/homeScreen/SearchfilterScreen/searchfilter_screen.dart';
 import 'package:directoryapp/module/home/views/homeScreen/SettingTabScreen/personal_information.dart';
-import 'package:directoryapp/module/home/views/homeScreen/Subscription/subscription_screen.dart';
+import 'package:directoryapp/module/home/views/homeScreen/SettingTabScreen/subscription_screen.dart';
+import 'package:directoryapp/module/home/views/homeScreen/SettingTabScreen/term_conditions.dart';
 import 'package:directoryapp/module/home/views/homeScreen/main_screen.dart';
 import 'package:directoryapp/module/authentication/views/screens/registerScreen/address_screen.dart';
 import 'package:directoryapp/module/authentication/views/screens/registerScreen/otp_screen.dart';
@@ -49,7 +55,12 @@ class MyApp extends StatelessWidget {
         "/RatingScreen": (context) => RatingScreen(),
         "/SettingScreen":(context)=>SettingScreen(),
         "/PersonalInformation":(context)=>PersonalInformation(),
-
+        "/PaymentHistoryScreen":(context)=>PaymentHistoryScreen(),
+        "/BookmarkScreen":(context)=>BookmarkScreen(),
+        "/HelpSupportScreen":(context)=>HelpSupportScreen(),
+        "/AboutUsScreen":(context)=>AboutUsScreen(),
+        "/PrivacyPolicyScreen":(context)=>PrivacyPolicyScreen(),
+        "/TermConditions":(context)=>TermConditions(),
       },
     );
   }
