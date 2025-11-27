@@ -25,12 +25,15 @@ class AppIconImg {
   static const String addBookmark = "assets/svg/addbookmark.png";
   static const String bookmark = "assets/svg/bookmark.png";
   static const String notifications = "assets/svg/notification.png";
-  static const String jobBoardImg = "assets/svg/Subtract.png";
+  static const String jobBoardImg = "assets/svg/jobboard.png";
   static const String jobPostingImg = "assets/svg/bag.png";
   static const String Indflag = "assets/svg/indflag.png";
   static const String notificationimg = "assets/svg/noti.png";
   static const String notificationimg2 = "assets/svg/notifi.png";
   static const String kingimg = "assets/svg/king.png";
   static const String sbscribeImg = "assets/svg/subscribe.png";
+    static const String settingIcon = "assets/svg/settinicon.png";
+  static const String homeIconimg = "assets/svg/home.png";
+
 
 }

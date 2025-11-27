@@ -11,14 +11,15 @@ class UniversalTextField extends StatelessWidget {
   final double borderWidth;
   final TextEditingController? controller;
   final Widget? suffixIcon;
-    final Widget? prefixIcon;
-
+  final Widget? prefixIcon;
   final int? MaxLines;
+  final bool readOnly;
+  final VoidCallback? onTap;
 
   const UniversalTextField({
     super.key,
     required this.hintText,
-     this.labelText,
+    this.labelText,
     this.bgColor,
     this.borderColor,
     this.borderRadius = 16,
@@ -26,7 +27,9 @@ class UniversalTextField extends StatelessWidget {
     this.controller,
     this.suffixIcon,
     this.prefixIcon,
-    this.MaxLines,
+    this.MaxLines = 1,
+    this.readOnly = false,
+    this.onTap,
   });
 
   OutlineInputBorder _buildBorder(Color color) {
@@ -39,27 +42,34 @@ class UniversalTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextField(
-      maxLines: MaxLines,
       controller: controller,
-      decoration: InputDecoration(prefixIcon: prefixIcon,
+      readOnly: readOnly,
+      maxLines: MaxLines,
+      onTap: onTap,
+      decoration: InputDecoration(
+        prefixIcon: prefixIcon,
+        suffixIcon: suffixIcon,
         filled: true,
         fillColor: bgColor ?? Colors.white,
-        suffixIcon: suffixIcon,
+
         labelText: labelText,
         labelStyle: AppTextStyle.semiBold14black,
+
         hintText: hintText,
         hintStyle: TextStyle(
-          color: Color(0xFF808080),
+          color: const Color(0xFF808080),
           fontFamily: AppFonts.sourceSans,
           fontSize: 16,
         ),
+
         enabledBorder: _buildBorder(borderColor ?? AppColors.borderColor),
         focusedBorder: _buildBorder(borderColor ?? AppColors.PrimaryColor),
         errorBorder: _buildBorder(AppColors.borderColor),
         focusedErrorBorder: _buildBorder(AppColors.borderColor),
+
         contentPadding: const EdgeInsets.symmetric(
-          horizontal: 12,
-          vertical: 14,
+          horizontal: 14,
+          vertical: 16,
         ),
       ),
     );
