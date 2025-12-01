@@ -1,3 +1,4 @@
+import 'package:directoryapp/module/authentication/views/screens/profile_register.dart';
 import 'package:directoryapp/module/home/views/homeScreen/home_item_details.dart';
 import 'package:directoryapp/module/home/views/homeScreen/search_filter_screen.dart';
 import 'package:directoryapp/module/jobboard/view/Job_board_screen.dart';
@@ -42,7 +43,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return MaterialPageRoute(builder: (_) => const OtpScreen(mobile: '',));
 
     case "/ProfileRegister":
-      // return MaterialPageRoute(builder: (_) => const ProfileRegister());
+      return MaterialPageRoute(builder: (_) => const ProfileRegister());
 
     case "/AddressScreen":
       return MaterialPageRoute(builder: (_) => const AddressScreen());
