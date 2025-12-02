@@ -40,8 +40,10 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return MaterialPageRoute(builder: (_) => const RegisterScreen());
 
     case "/OtpScreen":
-      return MaterialPageRoute(builder: (_) => const OtpScreen(mobile: '',));
-
+      final phone = settings.arguments as String;
+      return MaterialPageRoute(
+        builder: (_) => OtpScreen(mobile: phone),
+      );
     case "/ProfileRegister":
       return MaterialPageRoute(builder: (_) => const ProfileRegister());
 
