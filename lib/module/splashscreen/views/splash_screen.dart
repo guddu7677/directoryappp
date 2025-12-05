@@ -24,6 +24,25 @@ class _SplashScreenState extends State<SplashScreen> {
 });
 
   }
+//   void checkLogin() async {
+//   bool isLoggedIn = await ApiService().isUserLoggedIn();
+
+//   if (!mounted) return;
+
+//   if (isLoggedIn) {
+//     Navigator.pushNamedAndRemoveUntil(
+//       context,
+//       "/MainScreen",
+//       (route) => false,
+//     );
+//   } else {
+//     Navigator.pushNamedAndRemoveUntil(
+//       context,
+//       "/LoginScreen",
+//       (route) => false,
+//     );
+//   }
+// }
 
   @override
   Widget build(BuildContext context) {

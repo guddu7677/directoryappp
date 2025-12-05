@@ -1,3 +1,4 @@
+import 'package:directoryapp/module/authentication/views/screens/address_screen.dart';
 import 'package:directoryapp/module/authentication/views/screens/profile_register.dart';
 import 'package:directoryapp/module/home/views/homeScreen/home_item_details.dart';
 import 'package:directoryapp/module/home/views/homeScreen/search_filter_screen.dart';
@@ -21,8 +22,6 @@ import 'package:directoryapp/module/splashscreen/views/onbording_screen.dart';
 import 'package:directoryapp/module/authentication/views/screens/login_screen.dart';
 import 'package:directoryapp/module/authentication/views/screens/register_screen.dart';
 import 'package:directoryapp/module/authentication/views/screens/otp_screen.dart';
-// import 'package:directoryapp/module/authentication/views/screens/profile_register.dart';
-import 'package:directoryapp/module/authentication/views/screens/address_screen.dart';
 import 'package:directoryapp/module/home/views/homeScreen/main_screen.dart';
 
 Route<dynamic> generateRoute(RouteSettings settings) {
@@ -38,12 +37,24 @@ Route<dynamic> generateRoute(RouteSettings settings) {
 
     case "/RegisterScreen":
       return MaterialPageRoute(builder: (_) => const RegisterScreen());
-
     case "/OtpScreen":
-      final phone = settings.arguments as String;
+      final args = settings.arguments;
+      String phone = "";
+      bool isLogin = true;
+      
+      if (args is Map<String, dynamic>) {
+        phone = args["phone"] ?? "";
+        isLogin = args["isLogin"] ?? true;
+      } else if (args is String) {
+        phone = args;
+        isLogin = true;
+      }
+      
       return MaterialPageRoute(
-        builder: (_) => OtpScreen(mobile: phone),
+        builder: (_) => OtpScreen(mobile: phone, isLogin: isLogin),
       );
+
+
     case "/ProfileRegister":
       return MaterialPageRoute(builder: (_) => const ProfileRegister());
 

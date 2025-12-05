@@ -5,7 +5,6 @@ import 'package:directoryapp/core/widgets/header_item.dart';
 import 'package:directoryapp/module/authentication/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
 
@@ -17,44 +16,42 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController phoneController = TextEditingController();
   bool isLoading = false;
   final ApiService _apiService = ApiService();
-  late String phone;
+  
   @override
   void dispose() {
     phoneController.dispose();
     super.dispose();
   }
 
-  bool _isValidMobile(String phone) {
-    return RegExp(r'^[0-9]\d{9}$').hasMatch(phone);
-  }
-
-  Future<void> _onContinue() async {
+  void _onContinue() async {
     final phone = phoneController.text.trim();
-
-    if (!_isValidMobile(phone)) {
-      Fluttertoast.showToast(
-        msg: "Please enter a valid 10-digit mobile number",
-      );
-      return;
+    if (phone.isEmpty || phone.length != 10) {
+      Fluttertoast.showToast(msg: "Please enter valid 10 digit phone number");
+      return;  
     }
-
+    
     setState(() => isLoading = true);
-    // return;
-    print("userlog:$phone");
     final result = await _apiService.userSignup(phone);
-
     setState(() => isLoading = false);
-
-    print(result);
-
-    if (result["success"] == true || result["status"] == true) {
+    
+    if (result["status"] == true) {
       Fluttertoast.showToast(msg: "OTP Sent Successfully");
-
-      await _apiService.savePhone(phone);
-
-      Navigator.pushNamed(context, "/OtpScreen", arguments: phone);
+      Navigator.pushNamedAndRemoveUntil(
+        context, 
+        "/OtpScreen", 
+        arguments: {"phone": phone, "isLogin": false}, 
+        (route) => false
+      );
+    } else if (result["message"] != null && 
+               result["message"].toString().toLowerCase().contains("already")) {
+      Fluttertoast.showToast(
+        msg: "User already registered. Please login instead.",
+      );
+      Navigator.pushReplacementNamed(context, "/LoginScreen");
     } else {
-      Fluttertoast.showToast(msg: result["message"] ?? "Something went wrong");
+      Fluttertoast.showToast(
+        msg: result["message"] ?? "Registration failed. Please try again."
+      );
     }
   }
 
@@ -68,20 +65,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
           Positioned.fill(
             child: Image.asset(AppImage.AppBgImage, fit: BoxFit.cover),
           ),
-
           Positioned(
             top: 0,
             left: 0,
             right: 0,
             child: BuildHeader(title: "Verify Your Phone Number"),
           ),
-
           Positioned.fill(
             top: topPadding + 75,
             bottom: 120,
             child: _buildBodyContent(),
           ),
-
           _buildBottomButton(),
         ],
       ),
@@ -98,17 +92,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
             "Get started with your phone number",
             style: AppTextStyle.semiBold17black,
           ),
-
           const SizedBox(height: 6),
           const Text(
             "Please enter your mobile number to continue.",
             style: TextStyle(color: Colors.black),
           ),
-
-          const SizedBox(height: 24),
+          SizedBox(height: 24),
           Text("Phone Number", style: AppTextStyle.semiBold17black),
           const SizedBox(height: 10),
-
           Container(
             height: 55,
             padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -123,7 +114,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 const SizedBox(width: 4),
                 Text("+91"),
                 SizedBox(width: 4),
-
                 Container(
                   height: 40,
                   width: 1.5,
@@ -134,9 +124,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   child: TextField(
                     controller: phoneController,
                     keyboardType: TextInputType.phone,
+                    maxLength: 10,
                     decoration: const InputDecoration(
                       border: InputBorder.none,
                       hintText: "Enter phone number",
+                      counterText: "",
                     ),
                     style: AppTextStyle.black16B2,
                   ),
@@ -144,14 +136,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ],
             ),
           ),
-
           const SizedBox(height: 30),
         ],
       ),
     );
   }
 
-  // ---------- BOTTOM BUTTON ----------
   Widget _buildBottomButton() {
     return Positioned(
       left: 20,
@@ -182,9 +172,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   : Text("Continue", style: AppTextStyle.semiBold17White),
             ),
           ),
-
           const SizedBox(height: 10),
-
           Text.rich(
             TextSpan(
               text: "By continuing, you agree to our ",

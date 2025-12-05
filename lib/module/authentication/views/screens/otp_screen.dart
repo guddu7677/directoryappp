@@ -10,8 +10,9 @@ import 'package:pinput/pinput.dart';
 
 class OtpScreen extends StatefulWidget {
   final String mobile;
+  final bool isLogin;
 
-  const OtpScreen({super.key, required this.mobile});
+  const OtpScreen({super.key, required this.mobile, this.isLogin = true});
 
   @override
   State<OtpScreen> createState() => _OtpScreenState();
@@ -19,25 +20,27 @@ class OtpScreen extends StatefulWidget {
 
 class _OtpScreenState extends State<OtpScreen> {
   final otpController = TextEditingController();
-
   final ApiService _apiService = ApiService();
   bool _isloading = false;
   Timer? _timer;
   int _resendTimer = 30;
-  bool _islogin = false;
+  late bool _isLogin;
   late String phone;
+
   @override
   void initState() {
     super.initState();
     phone = widget.mobile;
-    print(widget.mobile);
-    _islogin = true;
+    _isLogin = widget.isLogin;
+    print("OTP Screen - Phone: $phone, IsLogin: $_isLogin");
     startTimer();
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+  void dispose() {
+    _timer?.cancel();
+    otpController.dispose();
+    super.dispose();
   }
 
   void startTimer() {
@@ -45,6 +48,11 @@ class _OtpScreenState extends State<OtpScreen> {
     _resendTimer = 30;
 
     _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      if (!mounted) {
+        timer.cancel();
+        return;
+      }
+
       if (_resendTimer > 0) {
         setState(() => _resendTimer--);
       } else {
@@ -58,9 +66,11 @@ class _OtpScreenState extends State<OtpScreen> {
 
     setState(() => _isloading = true);
 
-    final result = _islogin
-        ? await _apiService.userlogin(phone)
+    final result = _isLogin
+        ? await _apiService.userLogin(phone)
         : await _apiService.userSignup(phone);
+
+    if (!mounted) return;
 
     setState(() => _isloading = false);
 
@@ -80,19 +90,60 @@ class _OtpScreenState extends State<OtpScreen> {
     }
 
     setState(() => _isloading = true);
-    print("log:$phone");
+    print("Verifying OTP for: $phone");
+
     final result = await _apiService.verifyOtp(phone, otpController.text);
+
+    if (!mounted) return;
+
     setState(() => _isloading = false);
 
     if (result["status"] == true) {
-      Fluttertoast.showToast(msg: "Otp verified");
-      print("Saved Token Check: ${await _apiService.getAuthToken()}");
+      Fluttertoast.showToast(msg: "OTP verified successfully");
+      _timer?.cancel();
 
-      Navigator.pushNamedAndRemoveUntil(
-        context,
-        "/ProfileRegister",
-        (route) => false,
+      bool isNewUser = result["is_new_user"] ?? false;
+      bool hasProfile = result["has_profile"] ?? false;
+      bool hasAddress = result["has_address"] ?? false;
+      String? token = result["token"];
+
+      print(
+        "User Status - New: $isNewUser, Profile: $hasProfile, Address: $hasAddress",
       );
+      print("Server Token: $token");
+
+      if (token != null &&
+          token.isNotEmpty &&
+          !isNewUser &&
+          hasProfile &&
+          hasAddress) {
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          "/MainScreen",
+          (route) => false,
+        );
+        return;
+      }
+
+      if (!hasProfile) {
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          "/ProfileRegister",
+          (route) => false,
+        );
+      } else if (!hasAddress) {
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          "/AddressScreen",
+          (route) => false,
+        );
+      } else {
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          "/ProfileRegister",
+          (route) => false,
+        );
+      }
     }
   }
 
@@ -114,7 +165,6 @@ class _OtpScreenState extends State<OtpScreen> {
           Positioned.fill(top: topPadding + 75, child: _buildBodyContent()),
         ],
       ),
-
       bottomNavigationBar: Padding(
         padding: EdgeInsets.all(16.0),
         child: Column(
@@ -135,12 +185,10 @@ class _OtpScreenState extends State<OtpScreen> {
                 ),
               ),
             ),
-
             const SizedBox(height: 10),
-
             Text.rich(
               TextSpan(
-                text: "By login you agree to our ",
+                text: "By continuing you agree to our ",
                 style: const TextStyle(fontSize: 14, color: Colors.black),
                 children: [
                   TextSpan(
@@ -170,11 +218,10 @@ class _OtpScreenState extends State<OtpScreen> {
           Text("Enter OTP", style: AppTextStyle.semiBold17black),
           SizedBox(height: 6),
           Text(
-            "Please enter the OTP sent to your mobile number (${widget.mobile}).",
+            "Please enter the OTP sent to your mobile number ($phone).",
             style: TextStyle(color: Colors.black),
           ),
           SizedBox(height: 24),
-
           Text("OTP", style: AppTextStyle.semiBold17black),
           SizedBox(height: 10),
           Center(

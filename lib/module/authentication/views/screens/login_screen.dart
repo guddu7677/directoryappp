@@ -3,6 +3,7 @@ import 'package:directoryapp/core/constants/constant_fonts.dart';
 import 'package:directoryapp/core/constants/constant_images.dart';
 import 'package:directoryapp/core/widgets/header_item.dart';
 import 'package:directoryapp/module/authentication/services/auth_service.dart';
+import 'package:directoryapp/module/authentication/services/fcm_service.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -17,27 +18,38 @@ class _LoginScreenState extends State<LoginScreen> {
   final phoneController = TextEditingController();
   bool isLoading = false;
   final ApiService _apiService = ApiService();
+  
+  @override
+  void initState() {
+    super.initState();
+    _getFCMToken();
+  }
+
+  void _getFCMToken() async {
+    String? token = await FCMTokenService.getFCMToken();
+    if (token != null) {
+      print(' FCM Token in LoginScreen: $token');
+    }
+  }
 
   void _login() async {
     final phone = phoneController.text.trim();
-
-    if (phone.length != 10) {
-      Fluttertoast.showToast(msg: "Please enter 10 digit valid mobile number");
-      return;
+    if (phone.isEmpty || phone.length != 10) {
+      Fluttertoast.showToast(msg: "please enter valid phone number 10 digit");
+      return; 
     }
-
+    
     setState(() => isLoading = true);
-    print("loginlog:$phone");
-    final result = await _apiService.userlogin(phone);
+    
+    String? fcmToken = await FCMTokenService.getFCMToken();
+    print('🔑 FCM Token for login: $fcmToken');
+    
+    final result = await _apiService.userLogin(phone);
     setState(() => isLoading = false);
-
-    print(result);
-
-    if (result["status"] == true || result["success"] == true) {
-      Fluttertoast.showToast(msg: "OTP Sent");
-      Navigator.pushNamed(context, "/OtpScreen" , arguments: phone);
-    } else {
-      Fluttertoast.showToast(msg: result["message"] ?? "Something went wrong");
+    
+    if(result["status"]==true || result["success"]==true){
+      Fluttertoast.showToast(msg: "Otp Sent Successfully");
+      Navigator.pushNamedAndRemoveUntil(context, "/OtpScreen", arguments: phone, (route) => false);
     }
   }
 

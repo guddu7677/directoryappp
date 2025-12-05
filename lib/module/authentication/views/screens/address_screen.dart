@@ -3,6 +3,7 @@ import 'package:directoryapp/core/constants/constant_colors.dart';
 import 'package:directoryapp/core/widgets/universol_button.dart';
 import 'package:directoryapp/core/widgets/universol_textfield.dart';
 import 'package:directoryapp/core/widgets/header_item.dart';
+import 'package:directoryapp/module/authentication/model/savAddress_model.dart';
 import 'package:directoryapp/module/authentication/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -27,11 +28,11 @@ class _AddressScreenState extends State<AddressScreen> {
  Future<void> onSaveAddress() async {
   if (houseNumController.text.trim().isEmpty) {
     Fluttertoast.showToast(msg: "Please enter house number");
-    return; 
+    return;
   }
   if (localityController.text.trim().isEmpty) {
     Fluttertoast.showToast(msg: "Please enter locality");
-    return; 
+    return;
   }
   if (cityController.text.trim().isEmpty) {
     Fluttertoast.showToast(msg: "Please enter city");
@@ -43,30 +44,38 @@ class _AddressScreenState extends State<AddressScreen> {
   }
   if (pinCodeController.text.trim().isEmpty) {
     Fluttertoast.showToast(msg: "Please enter pincode");
-    return; 
+    return;
   }
-  
+
   setState(() => isLoading = true);
-  final result = await apiService.saveAddress(
-    houseNo: houseNumController.text.trim(),
+
+  SavaddressModel model = SavaddressModel(
+    house_no: houseNumController.text.trim(),
     locality: localityController.text.trim(),
     city: cityController.text.trim(),
     state: stateController.text.trim(),
     pincode: pinCodeController.text.trim(),
   );
+
+  final result = await apiService.saveAddress(model);
+
   setState(() => isLoading = false);
-  
-  if (result["status"] == true|| result["success"] == true) {
+
+  if ((result["status"] == true || result["success"] == true)) {
     Fluttertoast.showToast(msg: "Address saved successfully");
-Navigator.pushNamedAndRemoveUntil(
-  context,
-  "/MainScreen",
-  (route) => false,
-);
+
+    Navigator.pushNamedAndRemoveUntil(
+      context,
+      "/MainScreen",
+      (route) => false,
+    );
   } else {
-    Fluttertoast.showToast(msg: result["message"] ?? "Something went wrong");
+    Fluttertoast.showToast(
+      msg: result["message"] ?? "Something went wrong",
+    );
   }
 }
+
 
   @override
   Widget build(BuildContext context) {

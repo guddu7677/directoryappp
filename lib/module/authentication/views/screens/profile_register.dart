@@ -17,12 +17,11 @@ class ProfileRegister extends StatefulWidget {
   State<ProfileRegister> createState() => _ProfileRegisterState();
 }
 
-class _ProfileRegisterState extends State<ProfileRegister> {
+  class _ProfileRegisterState extends State<ProfileRegister> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController designationController = TextEditingController();
   final TextEditingController companyController = TextEditingController();
-  final TextEditingController contactController = TextEditingController();
   final TextEditingController altContactController = TextEditingController();
   final TextEditingController descBussiness = TextEditingController();
   final TextEditingController bussinessGoal = TextEditingController();
@@ -263,12 +262,7 @@ class _ProfileRegisterState extends State<ProfileRegister> {
             labelText: 'Company',
           ),
           const SizedBox(height: 16),
-          UniversalTextField(
-            controller: contactController,
-            hintText: 'Input',
-            labelText: 'Contact Details',
-          ),
-          const SizedBox(height: 16),
+        
           UniversalTextField(
             controller: altContactController,
             hintText: 'Input',
