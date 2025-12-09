@@ -29,7 +29,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
       Fluttertoast.showToast(msg: "Please enter valid 10 digit phone number");
       return;  
     }
-    
     setState(() => isLoading = true);
     final result = await _apiService.userSignup(phone);
     setState(() => isLoading = false);

@@ -1,6 +1,7 @@
 import 'package:directoryapp/module/authentication/views/screens/address_screen.dart';
 import 'package:directoryapp/module/authentication/views/screens/profile_register.dart';
 import 'package:directoryapp/module/home/views/homeScreen/home_item_details.dart';
+import 'package:directoryapp/module/home/views/homeScreen/home_screen.dart';
 import 'package:directoryapp/module/home/views/homeScreen/search_filter_screen.dart';
 import 'package:directoryapp/module/jobboard/view/Job_board_screen.dart';
 import 'package:directoryapp/module/jobboard/view/add_job_screen.dart';
@@ -41,7 +42,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       final args = settings.arguments;
       String phone = "";
       bool isLogin = true;
-      
+
       if (args is Map<String, dynamic>) {
         phone = args["phone"] ?? "";
         isLogin = args["isLogin"] ?? true;
@@ -49,11 +50,10 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         phone = args;
         isLogin = true;
       }
-      
+
       return MaterialPageRoute(
         builder: (_) => OtpScreen(mobile: phone, isLogin: isLogin),
       );
-
 
     case "/ProfileRegister":
       return MaterialPageRoute(builder: (_) => const ProfileRegister());
@@ -63,6 +63,8 @@ Route<dynamic> generateRoute(RouteSettings settings) {
 
     case "/MainScreen":
       return MaterialPageRoute(builder: (_) => const MainScreen());
+    case "/HomeScreen":
+      return MaterialPageRoute(builder: (_) => const HomeScreen());
 
     case "/HomeItemDetails":
       return MaterialPageRoute(builder: (_) => const HomeItemDetails());

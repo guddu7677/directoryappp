@@ -1,5 +1,7 @@
 import 'package:directoryapp/core/constants/constant_colors.dart';
 import 'package:directoryapp/core/constants/constant_images.dart';
+import 'package:directoryapp/module/authentication/provider/auth_provider.dart';
+import 'package:directoryapp/module/authentication/services/auth_service.dart';
 import 'package:directoryapp/module/home/provider/home_provider.dart';
 import 'package:directoryapp/module/setting/widgets/setting_widget.dart';
 import 'package:directoryapp/core/widgets/header_item.dart';
@@ -21,9 +23,9 @@ class _SettingScreenState extends State<SettingScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: BuildHeader(
-       onBack: () {
-    Provider.of<NavigationProvider>(context, listen: false).setIndex(0);
-     },
+        onBack: () {
+          Provider.of<NavigationProvider>(context, listen: false).setIndex(0);
+        },
         title: "Profile",
       ),
 
@@ -212,9 +214,17 @@ class _SettingScreenState extends State<SettingScreen> {
                           ),
                         ),
                         SizedBox(height: 16),
-                        settingTab(
-                          text: "Log Out",
-                          icon: Icons.bookmark_outline,
+                        InkWell(
+                          onTap: () async {
+                            await ApiService().logOut();
+                           context.read<AuthProvider>().logout();
+
+                          },
+
+                          child: settingTab(
+                            text: "Log Out",
+                            icon: Icons.bookmark_outline,
+                          ),
                         ),
                       ],
                     ),

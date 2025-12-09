@@ -42,7 +42,7 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() => isLoading = true);
     
     String? fcmToken = await FCMTokenService.getFCMToken();
-    print('🔑 FCM Token for login: $fcmToken');
+    print('FCM Token for login: $fcmToken');
     
     final result = await _apiService.userLogin(phone);
     setState(() => isLoading = false);

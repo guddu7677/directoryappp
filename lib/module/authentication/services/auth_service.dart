@@ -41,7 +41,7 @@ class ApiService {
       String? token = prefs.getString("token");
 
       if (token != null && token.isNotEmpty) {
-        print("Token Retrieved: ${token.substring(0, 20)}...");
+        print("Token Retrieved: ${token.substring(0, 20)}");
       } else {
         print("oken NOT FOUND in storage");
       }
@@ -270,7 +270,7 @@ class ApiService {
         return {"status": false, "message": "Token missing. Login again."};
       }
 
-      print("✅ Token found for saveAddress");
+      print("Token found for saveAddress");
 
       final response = await http.post(
         Uri.parse("${apiBaseUrl}user-save-address"),
@@ -292,4 +292,21 @@ class ApiService {
       return {"status": false, "message": "Error: $e"};
     }
   }
+
+  Future<void> logOut() async {
+  try {
+    final prefs = await SharedPreferences.getInstance();
+
+    bool removed = await prefs.remove("token");
+
+    if (removed) {
+      print(" Token successfully removed (Logout success)");
+    } else {
+      print(" Token remove failed");
+    }
+  } catch (e) {
+    print("Logout error: $e");
+  }
+}
+
 }

@@ -45,9 +45,12 @@ class _JobboardscreenState extends State<Jobboardscreen> {
       body: Column(
         children: [
           BuildHeader(
-           onBack: () {
-    Provider.of<NavigationProvider>(context, listen: false).setIndex(0);
-  },
+            onBack: () {
+              Provider.of<NavigationProvider>(
+                context,
+                listen: false,
+              ).setIndex(0);
+            },
             title: "Job Board",
             trailing: InkWell(
               onTap: () => Navigator.pushNamed(context, "/AddJobScreen"),

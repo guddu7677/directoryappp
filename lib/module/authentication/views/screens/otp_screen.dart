@@ -3,10 +3,13 @@ import 'package:directoryapp/core/constants/constant_colors.dart';
 import 'package:directoryapp/core/constants/constant_fonts.dart';
 import 'package:directoryapp/core/constants/constant_images.dart';
 import 'package:directoryapp/core/widgets/header_item.dart';
+import 'package:directoryapp/module/authentication/provider/auth_provider.dart';
 import 'package:directoryapp/module/authentication/services/auth_service.dart';
+import 'package:directoryapp/module/home/provider/home_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:pinput/pinput.dart';
+import 'package:provider/provider.dart';
 
 class OtpScreen extends StatefulWidget {
   final String mobile;
@@ -98,53 +101,22 @@ class _OtpScreenState extends State<OtpScreen> {
 
     setState(() => _isloading = false);
 
-    if (result["status"] == true) {
-      Fluttertoast.showToast(msg: "OTP verified successfully");
-      _timer?.cancel();
+   if (result["status"] == true) {
+  Fluttertoast.showToast(msg: "OTP verified successfully");
 
-      bool isNewUser = result["is_new_user"] ?? false;
-      bool hasProfile = result["has_profile"] ?? false;
-      bool hasAddress = result["has_address"] ?? false;
-      String? token = result["token"];
+  _timer?.cancel();
 
-      print(
-        "User Status - New: $isNewUser, Profile: $hasProfile, Address: $hasAddress",
-      );
-      print("Server Token: $token");
+  Provider.of<NavigationProvider>(
+    context,
+    listen: false,
+  ).resetToHome();
 
-      if (token != null &&
-          token.isNotEmpty &&
-          !isNewUser &&
-          hasProfile &&
-          hasAddress) {
-        Navigator.pushNamedAndRemoveUntil(
-          context,
-          "/MainScreen",
-          (route) => false,
-        );
-        return;
-      }
+  Provider.of<AuthProvider>(
+    context,
+    listen: false,
+  ).loginSuccess();
+}
 
-      if (!hasProfile) {
-        Navigator.pushNamedAndRemoveUntil(
-          context,
-          "/ProfileRegister",
-          (route) => false,
-        );
-      } else if (!hasAddress) {
-        Navigator.pushNamedAndRemoveUntil(
-          context,
-          "/AddressScreen",
-          (route) => false,
-        );
-      } else {
-        Navigator.pushNamedAndRemoveUntil(
-          context,
-          "/ProfileRegister",
-          (route) => false,
-        );
-      }
-    }
   }
 
   @override

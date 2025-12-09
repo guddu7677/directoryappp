@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 class NavigationProvider extends ChangeNotifier {
   int _selectedIndex = 0;
   int _previousIndex = 0;
-
   int get selectedIndex => _selectedIndex;
   int get previousIndex => _previousIndex;
 

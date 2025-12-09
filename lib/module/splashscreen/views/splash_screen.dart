@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:directoryapp/core/constants/constant_fonts.dart';
 import 'package:directoryapp/core/constants/constant_images.dart';
-import 'package:directoryapp/module/authentication/provider/navigation_provider.dart';
+import 'package:directoryapp/module/authentication/provider/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -14,35 +14,21 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
 
+  
   @override
   void initState() {
     super.initState();
 
-  Timer(Duration(seconds: 3), () {
-  Provider.of<AuthNavigationProvider>(context, listen: false)
-      .navigateTo("/OnboardingScreen");
-});
+    Future.delayed(const Duration(seconds: 3), () {
+      if (!mounted) return;
 
+      Provider.of<AuthProvider>(
+        context,
+        listen: false,
+      ).checkAuth();
+    });
   }
-//   void checkLogin() async {
-//   bool isLoggedIn = await ApiService().isUserLoggedIn();
 
-//   if (!mounted) return;
-
-//   if (isLoggedIn) {
-//     Navigator.pushNamedAndRemoveUntil(
-//       context,
-//       "/MainScreen",
-//       (route) => false,
-//     );
-//   } else {
-//     Navigator.pushNamedAndRemoveUntil(
-//       context,
-//       "/LoginScreen",
-//       (route) => false,
-//     );
-//   }
-// }
 
   @override
   Widget build(BuildContext context) {

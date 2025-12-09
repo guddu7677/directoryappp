@@ -1,5 +1,5 @@
 import 'package:directoryapp/core/utils/routes.dart';
-import 'package:directoryapp/module/authentication/provider/navigation_provider.dart';
+import 'package:directoryapp/module/authentication/provider/auth_provider.dart';
 import 'package:directoryapp/module/authentication/services/fcm_service.dart';
 import 'package:directoryapp/module/home/provider/home_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -29,8 +29,8 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
+         ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => NavigationProvider()),
-        ChangeNotifierProvider(create: (_) => AuthNavigationProvider()),
       ],
       child: const MyApp(),
     ),
@@ -39,15 +39,14 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
-  @override
+ @override
   Widget build(BuildContext context) {
-    final authNav = context.watch<AuthNavigationProvider>();
+    final authNav = context.watch<AuthProvider>();
 
     return MaterialApp(
       navigatorKey: authNav.navigatorKey,
       debugShowCheckedModeBanner: false,
-      initialRoute: authNav.currentRoute,
+      initialRoute: "/SplashScreen",
       onGenerateRoute: generateRoute,
     );
   }

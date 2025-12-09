@@ -5,8 +5,10 @@ import 'package:directoryapp/core/widgets/universol_textfield.dart';
 import 'package:directoryapp/core/widgets/header_item.dart';
 import 'package:directoryapp/module/authentication/model/savAddress_model.dart';
 import 'package:directoryapp/module/authentication/services/auth_service.dart';
+import 'package:directoryapp/module/home/provider/home_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
 
 class AddressScreen extends StatefulWidget {
   const AddressScreen({super.key});
@@ -64,11 +66,21 @@ class _AddressScreenState extends State<AddressScreen> {
   if ((result["status"] == true || result["success"] == true)) {
     Fluttertoast.showToast(msg: "Address saved successfully");
 
-    Navigator.pushNamedAndRemoveUntil(
-      context,
-      "/MainScreen",
-      (route) => false,
-    );
+   if (result["status"] == true || result["success"] == true) {
+  Fluttertoast.showToast(msg: "Address saved successfully");
+
+  Provider.of<NavigationProvider>(
+    context,
+    listen: false,
+  ).resetToHome();
+
+  Navigator.pushNamedAndRemoveUntil(
+    context,
+    "/MainScreen",
+    (route) => false,
+  );
+}
+
   } else {
     Fluttertoast.showToast(
       msg: result["message"] ?? "Something went wrong",
