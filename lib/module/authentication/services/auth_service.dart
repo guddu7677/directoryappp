@@ -20,7 +20,7 @@ class ApiService {
         print("Token SUCCESSFULLY saved");
 
         String? retrievedToken = prefs.getString('token');
-        print(" Verified Token: ${retrievedToken?.substring(0, 20)}...");
+print("Verified Token: $retrievedToken");
 
         if (retrievedToken == token) {
           print(" Token verification SUCCESSFUL");

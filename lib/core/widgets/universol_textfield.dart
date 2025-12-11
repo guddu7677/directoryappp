@@ -15,7 +15,7 @@ class UniversalTextField extends StatelessWidget {
   final int? MaxLines;
   final bool readOnly;
   final VoidCallback? onTap;
-
+  final ValueChanged<String>? onchanged;
   const UniversalTextField({
     super.key,
     required this.hintText,
@@ -30,6 +30,7 @@ class UniversalTextField extends StatelessWidget {
     this.MaxLines = 1,
     this.readOnly = false,
     this.onTap,
+    this.onchanged
   });
 
   OutlineInputBorder _buildBorder(Color color) {
@@ -46,6 +47,7 @@ class UniversalTextField extends StatelessWidget {
       readOnly: readOnly,
       maxLines: MaxLines,
       onTap: onTap,
+      onChanged: onchanged,
       decoration: InputDecoration(
         prefixIcon: prefixIcon,
         suffixIcon: suffixIcon,

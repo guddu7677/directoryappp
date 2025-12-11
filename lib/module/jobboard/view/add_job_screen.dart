@@ -4,11 +4,13 @@ import 'package:directoryapp/core/constants/constant_fonts.dart';
 import 'package:directoryapp/core/constants/constant_images.dart';
 import 'package:directoryapp/core/widgets/universol_button.dart';
 import 'package:directoryapp/core/widgets/universol_textfield.dart';
+import 'package:directoryapp/module/home/provider/home_provider.dart';
 import 'package:directoryapp/module/jobboard/models/create_job_model.dart';
 import 'package:directoryapp/module/jobboard/service/api_job_service.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
 
 class AddJobScreen extends StatefulWidget {
   const AddJobScreen({super.key});
@@ -51,26 +53,40 @@ class _AddJobScreenState extends State<AddJobScreen> {
   }
 
   Future<void> submitJob() async {
-    if (jobTitleController.text.isEmpty ||
-        descriptionController.text.isEmpty ||
-        requirementController.text.isEmpty ||
-        locationController.text.isEmpty ||
-        minimumSalaryController.text.isEmpty ||
-        maximumSalaryController.text.isEmpty) {
+    if (jobTitleController.text.trim().isEmpty ||
+        descriptionController.text.trim().isEmpty ||
+        requirementController.text.trim().isEmpty ||
+        locationController.text.trim().isEmpty ||
+        minimumSalaryController.text.trim().isEmpty ||
+        maximumSalaryController.text.trim().isEmpty) {
       Fluttertoast.showToast(msg: "Please fill all fields");
+      return;
+    }
+
+    final minSalary = double.tryParse(minimumSalaryController.text.trim());
+    final maxSalary = double.tryParse(maximumSalaryController.text.trim());
+
+    if (minSalary == null || maxSalary == null) {
+      Fluttertoast.showToast(msg: "Please enter valid salary amounts");
+      return;
+    }
+
+    if (maxSalary <= minSalary) {
+      Fluttertoast.showToast(
+        msg: "Maximum salary must be greater than minimum salary",
+      );
       return;
     }
 
     setState(() => isLoading = true);
 
     CreateJobModel model = CreateJobModel(
-      job_id: 0, 
-      job_title: jobTitleController.text,
-      description: descriptionController.text,
-      requirement: requirementController.text,
-      location: locationController.text,
-      min_salary: minimumSalaryController.text,
-      max_salary: maximumSalaryController.text,
+      job_title: jobTitleController.text.trim(),
+      description: descriptionController.text.trim(),
+      requirement: requirementController.text.trim(),
+      location: locationController.text.trim(),
+      min_salary: minimumSalaryController.text.trim(),
+      max_salary: maximumSalaryController.text.trim(),
       bannerImage: bannerImage,
     );
 
@@ -80,9 +96,19 @@ class _AddJobScreenState extends State<AddJobScreen> {
 
     if (response["status"] == true) {
       Fluttertoast.showToast(msg: "Job Created Successfully");
-      Navigator.pushNamed(context, "/MainScreen");
+      Provider.of<NavigationProvider>(context, listen: false).setIndex(2);
+      Navigator.pop(context); 
     } else {
-      Fluttertoast.showToast(msg: response["message"] ?? "Something went wrong");
+      String errorMsg = "Failed to create job";
+
+      if (response["message"] != null) {
+        errorMsg = response["message"];
+      } else if (response["errors"] != null) {
+        Map<String, dynamic> errors = response["errors"];
+        errorMsg = errors.values.first[0].toString();
+      }
+
+      Fluttertoast.showToast(msg: errorMsg, toastLength: Toast.LENGTH_LONG);
     }
   }
 
@@ -101,9 +127,7 @@ class _AddJobScreenState extends State<AddJobScreen> {
         centerTitle: true,
         title: Text("Add Job", style: AppTextStyle.semiBold17black),
       ),
-
       bottomNavigationBar: _bottomButton(),
-
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
@@ -173,7 +197,6 @@ class _AddJobScreenState extends State<AddJobScreen> {
             labelText: 'Job Title',
           ),
           SizedBox(height: 16),
-
           UniversalTextField(
             controller: descriptionController,
             MaxLines: 4,
@@ -181,24 +204,20 @@ class _AddJobScreenState extends State<AddJobScreen> {
             labelText: 'Description',
           ),
           SizedBox(height: 16),
-
           UniversalTextField(
             controller: requirementController,
             hintText: 'Enter Requirements',
             labelText: 'Requirements',
           ),
           SizedBox(height: 16),
-
           UniversalTextField(
             controller: locationController,
             hintText: 'Enter Location',
             labelText: 'Location',
           ),
           SizedBox(height: 22),
-
           Text("Salary Range", style: AppTextStyle.semiBold17black),
           SizedBox(height: 10),
-
           Row(
             children: [
               Expanded(
@@ -231,7 +250,7 @@ class _AddJobScreenState extends State<AddJobScreen> {
         textColor: Colors.white,
         bgColor: AppColors.PrimaryColor,
         borderRadius: 12,
-      onTap: () async => await submitJob(),
+        onTap: () async => await submitJob(),
       ),
     );
   }

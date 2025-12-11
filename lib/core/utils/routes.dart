@@ -76,7 +76,11 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return MaterialPageRoute(builder: (_) => const Jobboardscreen());
 
     case "/JobBoardDetailsPage":
-      return MaterialPageRoute(builder: (_) => const JobBoardDetailsPage());
+      final jobId = settings.arguments as int;
+
+      return MaterialPageRoute(
+        builder: (_) => JobBoardDetailsPage(jobId: jobId),
+      );
 
     case "/AddJobScreen":
       return MaterialPageRoute(builder: (_) => const AddJobScreen());

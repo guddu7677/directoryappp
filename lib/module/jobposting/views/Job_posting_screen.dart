@@ -1,10 +1,10 @@
 import 'package:directoryapp/core/constants/constant_colors.dart';
-import 'package:directoryapp/module/home/provider/home_provider.dart';
+import 'package:directoryapp/module/jobboard/service/api_job_service.dart';
+import 'package:directoryapp/module/jobboard/view/job_board_details_page.dart';
 import 'package:directoryapp/module/jobposting/widgets/build_jobcard_widgets.dart';
 import 'package:directoryapp/module/setting/SettingTabScreen/widgets/job_lable_widget.dart';
 import 'package:directoryapp/core/widgets/header_item.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class JobPostingScreen extends StatefulWidget {
   const JobPostingScreen({super.key});
@@ -14,52 +14,62 @@ class JobPostingScreen extends StatefulWidget {
 }
 
 class _JobPostingScreenState extends State<JobPostingScreen> {
-  final List<Map<String, dynamic>> jobList = [
-    {
-      "companyShortName": "UBER",
-      "companyName": "Uber Technologies Inc.",
-      "salaryRange": "10,000 - 15,000",
-      "location": "California, USA",
-      "description":
-          "It is a long established fact that a reader will be distracted...",
-      "label": "Added",
-      "icon": Icons.bookmark_border_outlined,
-      "isClickable": true,
-    },
-    {
-      "companyShortName": "GOOG",
-      "companyName": "Google LLC",
-      "salaryRange": "20,000 - 35,000",
-      "location": "Mountain View, USA",
-      "description":
-          "Point of using Lorem Ipsum is that it has a normal distribution...",
-      "label": "Saved",
-      "icon": Icons.bookmark_added_rounded,
-      "isClickable": false,
-    },
-    {
-      "companyShortName": "Nawal",
-      "companyName": "Vertex",
-      "salaryRange": "15,000 - 45,000",
-      "location": "Patna (Bihar)",
-      "description":
-          "Point of using Lorem Ipsum is that it has a normal distribution...",
-      "label": "Saved",
-      "icon": Icons.bookmark_added_rounded,
-      "isClickable": false,
-    },
-  ];
+  List<Map<String, dynamic>> jobList = [];
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchJobs();
+  }
+
+  Future<void> fetchJobs() async {
+    setState(() => isLoading = true);
+
+    final api = ApiJobService();
+    final response = await api.fetchAllJobs();
+
+    setState(() => isLoading = false);
+
+    if (response["status"] == true && response["data"] != null) {
+      final data = response["data"] as List;
+      setState(() {
+        jobList = data.map((job) {
+          return {
+            "id": job["id"],
+            "companyShortName": _getShortName(job["job_title"] ?? ""),
+            "companyName": job["job_title"] ?? "",
+            "salaryRange":
+                "${job["min_salary"] ?? "0"} - ${job["max_salary"] ?? "50000"}",
+            "location": job["location"] ?? "",
+            "description": job["description"] ?? "",
+            "label": "Added",
+            "icon": Icons.bookmark_border_outlined,
+          };
+        }).toList();
+      });
+    }
+  }
+
+  String _getShortName(String name) {
+    if (name.isEmpty) return "NA";
+
+    final parts = name.split(" ");
+
+    if (parts.length >= 2) {
+      return parts[0][0] + parts[1][0];
+    }
+
+    return name.substring(0, name.length.clamp(1, 4));
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-
       appBar: BuildHeader(
-       onBack: () {
-    Provider.of<NavigationProvider>(context, listen: false).setIndex(0);
-  },
         title: "Job Postings",
+        onBack: () => Navigator.pop(context),
         trailing: Container(
           height: 30,
           width: 30,
@@ -67,47 +77,63 @@ class _JobPostingScreenState extends State<JobPostingScreen> {
             color: AppColors.PrimaryColor.withOpacity(0.2),
             borderRadius: BorderRadius.circular(8),
           ),
-          child: Center(
-            child: Icon(
-              Icons.bookmark_add_outlined,
-              color: AppColors.PrimaryColor,
-            ),
+          child: Icon(
+            Icons.bookmark_add_outlined,
+            color: AppColors.PrimaryColor,
           ),
         ),
       ),
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : jobList.isEmpty
+          ? _emptyState()
+          : _jobListView(),
+    );
+  }
 
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+  Widget _emptyState() {
+    return const Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.work_off, size: 60, color: Colors.grey),
+          SizedBox(height: 16),
+          Text("No jobs posted yet", style: TextStyle(color: Colors.grey)),
+        ],
+      ),
+    );
+  }
 
-        child: ListView.separated(
-          itemCount: jobList.length,
-          separatorBuilder: (_, __) => SizedBox(height: 16),
-          itemBuilder: (context, index) {
-            final item = jobList[index];
+  Widget _jobListView() {
+    return ListView.separated(
+      padding: const EdgeInsets.all(16),
+      itemCount: jobList.length,
+      separatorBuilder: (_, __) => const SizedBox(height: 16),
+      itemBuilder: (_, i) {
+        final item = jobList[i];
 
-            final card = JobCard(
-              companyShortName: item["companyShortName"],
-              companyName: item["companyName"],
-              salaryRange: item["salaryRange"],
-              location: item["location"],
-              description: item["description"],
-              bottomlablewidget: BottomlableContainer(
-                label: item["label"],
-                icon: item["icon"],
+        return GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => JobBoardDetailsPage(jobId: item["id"]),
               ),
             );
-
-            return item["isClickable"]
-                ? InkWell(
-                    onTap: () {
-                      Navigator.pushNamed(context, "/AddJobScreen");
-                    },
-                    child: card,
-                  )
-                : card;
           },
-        ),
-      ),
+          child: JobCard(
+            companyShortName: item["companyShortName"],
+            companyName: item["companyName"],
+            salaryRange: item["salaryRange"],
+            location: item["location"],
+            description: item["description"],
+            bottomlablewidget: BottomlableContainer(
+              label: item["label"],
+              icon: item["icon"],
+            ),
+          ),
+        );
+      },
     );
   }
 }

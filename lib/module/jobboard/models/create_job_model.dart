@@ -1,8 +1,6 @@
 import 'dart:io';
-import 'package:flutter/material.dart';
 
 class CreateJobModel {
-  final int job_id;
   final String job_title;
   final String description;
   final String requirement;
@@ -12,7 +10,6 @@ class CreateJobModel {
   final File? bannerImage;
 
   CreateJobModel({
-    required this.job_id,
     required this.job_title,
     required this.description,
     required this.requirement,
@@ -24,7 +21,6 @@ class CreateJobModel {
 
   Map<String, String> toJson() {
     return {
-      "job_id": job_id.toString(),
       "job_title": job_title,
       "description": description,
       "requirement": requirement,
